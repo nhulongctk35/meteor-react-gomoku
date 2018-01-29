@@ -1,0 +1,21 @@
+.board {
+  max-width: 600px;
+  margin: 0 auto;
+  background-color: #c19b6c;
+
+  &__cell {
+    margin: 1px;
+    position: relative;
+
+    &::before {
+      content: '';
+      display: block;
+      width: 100%;
+      padding-top: 100%;
+    }
+  }
+
+  &__control {
+    max-width: 100px;
+  }
+}

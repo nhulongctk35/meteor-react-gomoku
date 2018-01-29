@@ -1,0 +1,17 @@
+.icon {
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  top: 75%;
+  left: 70%;
+  z-index: 10;
+
+  &--black {
+    background-color: black;
+  }
+
+  &--white {
+    background-color: white;
+  }
+}
