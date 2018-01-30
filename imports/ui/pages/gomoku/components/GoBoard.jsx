@@ -27,11 +27,11 @@ class GoBoard extends Component {
     const { data } = this.props;    
     const player = data[xAxis][yAxis];
 
-    if (player === PLAYERS.A) {
+    if (player === PLAYERS.black) {
       return <span className="icon icon--black" />
     }
 
-    if (player === PLAYERS.B) {
+    if (player === PLAYERS.white) {
       return <span className="icon icon--white" />
     }
 

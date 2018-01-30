@@ -1,7 +1,7 @@
 const SIZE = 19;
 const PLAYERS = {
-  A: 'A',
-  B: 'B',
+  black: 'b',
+  white: 'w',
 };
 
 export {

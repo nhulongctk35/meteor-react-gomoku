@@ -1,6 +1,12 @@
 import React, { Component } from 'react';
 import { times, clone, reduce, some } from 'lodash';
 
+// using react-meteor-data to create a "data container"
+// to feed Meteor's reactive data into React's component hierarchy
+import { withTracker } from 'meteor/react-meteor-data';
+
+import gomokuApi from './../../../api/gomoku/index.js';
+
 import {
   GoBoard
 } from './components/index.jsx';
@@ -21,7 +27,7 @@ class BoardContainer extends Component {
     this.state = {
       boardData: fakeBoardData(),
       size: SIZE,
-      currentPlayer: PLAYERS.A, 
+      currentPlayer: PLAYERS.black, 
     };
   }
 
@@ -39,14 +45,14 @@ class BoardContainer extends Component {
   }
 
   getNextPlayer = () => {
-    const { A, B } = PLAYERS;
+    const { black, white } = PLAYERS;
 
-    return this.state.currentPlayer === A ? B : A; 
+    return this.state.currentPlayer === black ? white : black; 
   }
 
   countRepeat = (stringValue) => {
-    const regexBlackStone = /(A){5}/;
-    const regexWhiteStone = /(B){5}/;
+    const regexBlackStone = /(b){5}/;
+    const regexWhiteStone = /(w){5}/;
 
     return regexBlackStone.test(stringValue) || regexWhiteStone.test(stringValue);
   }
@@ -80,9 +86,10 @@ class BoardContainer extends Component {
     return this.test(horizontalBoard);
   }
 
-  checkWinner = () => {
+  checkWinner = (winner) => {
     if (this.checkHorizontal() || this.checkVertical()) {
-      alert(this.state.currentPlayer);
+      const winnerName = winner === 'b' ? 'Black' : 'White';
+      alert(`The winner is ${winnerName}`);
     }
   }
 
@@ -128,7 +135,8 @@ class BoardContainer extends Component {
           currentPlayer: nextPlayer,
         },
         () => {
-          this.checkWinner();
+          console.table(this.state.boardData);
+          this.checkWinner(currentPlayer);
         }
       );
     }
@@ -136,6 +144,9 @@ class BoardContainer extends Component {
 
   render() {
     const { size } = this.state;
+    console.group('longntran');
+    console.table(this.props.gomoku);
+    console.groupEnd();
 
     return (
       <div className="u-d-flex">
@@ -149,4 +160,10 @@ class BoardContainer extends Component {
   }
 }
 
-export default BoardContainer;
+const mapStateToProps = () => {
+  return {
+    gomoku: gomokuApi.find({}).fetch(),
+  };
+}
+
+export default withTracker(mapStateToProps)(BoardContainer);
