@@ -5,9 +5,9 @@ import {
   Header,
   Footer,
   DefaultLayout,
-} from './../common/index.jsx';
+} from './../ui/components/index.js';
 
-import { GomokuContainer, About } from './../pages/index';
+import { GomokuContainer, About } from './../ui/pages/index';
 
 class RootApp extends Component {
 
