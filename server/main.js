@@ -1,6 +1,3 @@
-import { Meteor } from 'meteor/meteor';
 import '../imports/startup/server/register-api.js';
+import '../imports/startup/server/fake-data.js';
 
-Meteor.startup(() => {
-  // code to run on server at startup
-});

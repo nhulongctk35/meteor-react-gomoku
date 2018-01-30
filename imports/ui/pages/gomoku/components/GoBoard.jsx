@@ -8,11 +8,13 @@ const Props = {
   data: PropTypes.array.isRequired,
   size: PropTypes.number,
   onClickCell: PropTypes.func,
+  handleResetBoardData: PropTypes.func,
 }
 
 const DefaultProps = {
   size: 15,
   onClickCell: () => null,
+  handleResetBoardData: () => null,
 };
 
 class GoBoard extends Component {
@@ -59,15 +61,17 @@ class GoBoard extends Component {
   }
 
   render() {
+    const { handleResetBoardData } = this.props;
+
     return (
       <div className="row">
-        <div className="col-md-6">
+        <div className="col-md-6 offset-md-3">
           <div className="board">
             {this.renderBoardView()}
           </div>
         </div>
-        <div className="col-md-6">
-          <div style={{width: '40%'}}>
+        <div className="col-md-3">
+          <div>
             <div className="card">
               <div className="card-header u-text-center">
                 Result
@@ -85,7 +89,9 @@ class GoBoard extends Component {
                     <div className="col-md-5 u-text-center font-weight-bold">White</div>
                   </div>
                 </div>
-                <button className="btn btn-primary btn-block my-2">Reset new game</button>
+                <button
+                  onClick={handleResetBoardData}
+                  className="btn btn-primary btn-block my-2">Reset game</button>
               </div>
             </div>
           </div>
