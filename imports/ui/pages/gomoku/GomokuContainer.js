@@ -8,9 +8,7 @@ import { withTracker } from 'meteor/react-meteor-data';
 
 import gomokuApi from './../../../api/gomoku/index.js';
 
-import {
-  GoBoard
-} from './components/index.jsx';
+import { GoBoard, ScoreBoard } from './components/index.jsx';
 import { SIZE, PLAYERS } from './constants.js';
 
 function fakeBoardData() {
@@ -26,8 +24,6 @@ class BoardContainer extends Component {
     super(props);
 
     this.state = {
-      boardData: props.gomoku.data,
-      id: props.gomoku.id || null,
       size: SIZE,
       currentPlayer: PLAYERS.black, 
     };
@@ -132,12 +128,27 @@ class BoardContainer extends Component {
   }
 
   saveBoardDataToDB = (boardData) => {
-    // save data to database{
-    Meteor.call('gomoku.update', { data: boardData, id: this.state.id });
+    // save data to database
+    const gomokuData = {
+      id: this.state.id,
+      data: boardData,
+    };
+
+    Meteor.call('gomoku.update', gomokuData);
   }
 
-  handleSaveWinner = () => {
-    Meteor.call('gomoku.remove', 111);
+  handleSaveWinner = (winner) => {
+    const currnetScore = this.props.gomoku[0].score;
+    const score = {
+      black: winner === 'b' ? currnetScore.black + 1 : currnetScore.black,
+      white: winner === 'w' ? currnetScore.white + 1 : currnetScore.white,
+    };
+
+    Meteor.call('gomoku.update', { id: this.state.id, winner, score });
+  }
+
+  handleResetBoardData = () => {
+    Meteor.call('gomoku.reset', { id: this.state.id });
   }
   
   handleSelectCell = (xAxis, yAxis) => {
@@ -159,19 +170,12 @@ class BoardContainer extends Component {
         },
         () => {
           if (this.checkWinner(currentPlayer)) {
-            // this.handleSaveWinner();
-          } else {
-            this.saveBoardDataToDB(this.state.boardData);
+            this.handleSaveWinner(currentPlayer);
           }
-          
+          this.saveBoardDataToDB(this.state.boardData);
         }
       );
     }
-  }
-
-  handleResetBoardData = () => {
-    const emptyBoardData = fakeBoardData();
-    this.saveBoardDataToDB(emptyBoardData);
   }
 
   render() {
@@ -183,20 +187,31 @@ class BoardContainer extends Component {
 
     return (
       <div className="u-d-flex">
-        <GoBoard
-          size={size}
-          onClickCell={this.handleSelectCell}
-          data={boardData}
-          handleResetBoardData={this.handleResetBoardData}
-        />
-      </div>
+        <div className="row">
+          <div className="col-md-6 offset-md-3">
+            <GoBoard
+              size={size}
+              onClickCell={this.handleSelectCell}
+              data={boardData}
+              />
+          </div>
+          <div className="col-md-3">
+            <ScoreBoard
+              score={this.props.gomoku[0].score}
+              handleResetBoardData={this.handleResetBoardData}
+            />
+          </div>
+        </div>
+     </div>
     );
   }
 }
 
 const mapStateToProps = () => {
+  const gomokuData = gomokuApi.find({}).fetch();
+  
   return {
-    gomoku: gomokuApi.find({}).fetch(),
+    gomoku: gomokuData,
   };
 }
 
